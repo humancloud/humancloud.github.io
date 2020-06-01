@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monaco:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"humancloud.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言: 笔记linux多线程的同步即   sem 和 互斥量 程序设计题不涉及多线程,不会使用到select,epoll,WSA等模型,有字符串处理 简答五选三(背五道题)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络编程考试">
+<meta property="og:url" content="https://humancloud.github.io/2020/05/31/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Hu">
+<meta property="og:description" content="前言: 笔记linux多线程的同步即   sem 和 互斥量 程序设计题不涉及多线程,不会使用到select,epoll,WSA等模型,有字符串处理 简答五选三(背五道题)">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-31T12:56:25.000Z">
+<meta property="article:modified_time" content="2020-06-01T12:11:04.084Z">
+<meta property="article:author" content="Hu">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://humancloud.github.io/2020/05/31/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>网络编程考试 | Hu</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hu</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>Schedule</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://humancloud.github.io/2020/05/31/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpg">
+      <meta itemprop="name" content="Hu">
+      <meta itemprop="description" content="Welcome!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hu">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          网络编程考试
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-31 20:56:25" itemprop="dateCreated datePublished" datetime="2020-05-31T20:56:25+08:00">2020-05-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-01 20:11:04" itemprop="dateModified" datetime="2020-06-01T20:11:04+08:00">2020-06-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">网络编程</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>10k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>9 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言-笔记"><a href="#前言-笔记" class="headerlink" title="前言: 笔记"></a>前言: 笔记</h2><p>linux多线程的同步即   sem 和 互斥量</p>
+<p>程序设计题不涉及多线程,不会使用到select,epoll,WSA等模型,有字符串处理</p>
+<p>简答五选三(背五道题)</p>
+<a id="more"></a>
+
+
+
+<h2 id="函数总结"><a href="#函数总结" class="headerlink" title="函数总结"></a>函数总结</h2><p><strong>TCP echo服务器用到的函数</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">close</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</span><br><span class="line"></span><br><span class="line">成功返回<span class="number">0</span>,失败返回<span class="number">-1</span>,其他返回值通过man了解</span><br></pre></td></tr></table></figure>
+
+
+<hr>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="keyword">uint8_t</span> 		sin_len;</span><br><span class="line">	<span class="keyword">sa_family_t</span> 	sin_family;</span><br><span class="line">	<span class="keyword">in_port_t</span> 		sin_port;</span><br><span class="line">	</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span>  <span class="title">sin_addr</span>;</span></span><br><span class="line">	<span class="keyword">char</span> 			sin_zero[<span class="number">8</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="keyword">in_addr_t</span> s_addr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">用到的就三个: sin_family,  sin_port,  sin_addr.s_addr</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="keyword">uint8_t</span> 		sa_len;</span><br><span class="line">	<span class="keyword">sa_family_t</span> 	sa_family;</span><br><span class="line">	<span class="keyword">char</span> 			sa_data[<span class="number">14</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">addr</span>;</span></span><br><span class="line">(struct sockaddr *)&amp;addr;  <span class="comment">//主要作用就是强制转换sockaddr_in类型为sockaddr类型</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;          </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span><span class="params">(AF_INET, SOCK_STREAM,<span class="number">0</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span><span class="params">(AF_INET,SOCK_DGRAM,<span class="number">0</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">AF_INET       ipv4</span><br><span class="line">AF_INET6      ipv6</span><br><span class="line">SOCK_STREAM   tcp</span><br><span class="line">SOCK_DGRAM    udp</span><br><span class="line"></span><br><span class="line">使用指定参数创建一个套接字</span><br></pre></td></tr></table></figure>
+
+<hr>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;      </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">listen</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> backlog)</span></span>;</span><br><span class="line"></span><br><span class="line">将创建的套接字标记为被动套接字,等待客户端连接</span><br></pre></td></tr></table></figure>
+
+<hr>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;          </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">accept</span><span class="params">(<span class="keyword">int</span> sockfd, struct sockaddr *addr, <span class="keyword">socklen_t</span> *addrlen)</span></span>;</span><br><span class="line"></span><br><span class="line">阻塞等待连接请求到达,连接请求到达后,创建连接套接字,客户端与服务器使用连接套接字通信</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;         </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> struct sockaddr *addr,</span></span></span><br><span class="line"><span class="function"><span class="params">            <span class="keyword">socklen_t</span> addrlen)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">send</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> len, <span class="keyword">int</span> flags)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">sendto</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> len, <span class="keyword">int</span> flags,</span></span></span><br><span class="line"><span class="function"><span class="params">                <span class="keyword">const</span> struct sockaddr *dest_addr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</span><br><span class="line"></span><br><span class="line">send 和recv 函数只能用于tcp, sendto和recvfrom函数可以用于udp也可用于tcp</span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">recv</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> len, <span class="keyword">int</span> flags)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">recvfrom</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> len, <span class="keyword">int</span> flags,</span></span></span><br><span class="line"><span class="function"><span class="params">                 struct sockaddr *src_addr, <span class="keyword">socklen_t</span> *addrlen)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">write</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">ssize_t</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> count)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">ssize_t</span> <span class="title">read</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> count)</span></span>;</span><br></pre></td></tr></table></figure>
+<hr>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">inet_ntop()</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">将网络字节序转为ip地址</span><br><span class="line"><span class="function"><span class="keyword">const</span> <span class="keyword">char</span> *<span class="title">inet_ntop</span><span class="params">(<span class="keyword">int</span> af, <span class="keyword">const</span> <span class="keyword">void</span> *src,</span></span></span><br><span class="line"><span class="function"><span class="params">                      <span class="keyword">char</span> *dst, <span class="keyword">socklen_t</span> <span class="built_in">size</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">inet_pton()</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">直接将ip地址转为网络字节序(不需要先转为主机字节序,再转为网络字节序)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">inet_pton</span><span class="params">(<span class="keyword">int</span> af, <span class="keyword">const</span> <span class="keyword">char</span> *src, <span class="keyword">void</span> *dst)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">uint32_t</span> <span class="title">htonl</span><span class="params">(<span class="keyword">uint32_t</span> hostlong)</span></span>;              <span class="comment">//host to network long          主机字节序转网络字节序   l表示long,转ip,s表示short转port</span></span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">uint16_t</span> <span class="title">htons</span><span class="params">(<span class="keyword">uint16_t</span> hostshort)</span></span>;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">uint32_t</span> <span class="title">ntohl</span><span class="params">(<span class="keyword">uint32_t</span> netlong)</span></span>;</span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">uint16_t</span> <span class="title">ntohs</span><span class="params">(<span class="keyword">uint16_t</span> netshort)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Tcp-服务器客户端通信过程"><a href="#Tcp-服务器客户端通信过程" class="headerlink" title="Tcp 服务器客户端通信过程"></a>Tcp 服务器客户端通信过程</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">服务器:</span><br><span class="line">socket()  创建套接字</span><br><span class="line"><span class="built_in">listen</span>()  将套接字标记为监听套接字</span><br><span class="line">accept()  阻塞等待客户端连接,收到连接请求后,建立连接返回连接套接字</span><br><span class="line"></span><br><span class="line">send,recv接收消息(或者使用<span class="built_in">write</span>,<span class="built_in">read</span>,或者sendto,recvfrom)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">客户端:</span><br><span class="line">socket()  创建套接字</span><br><span class="line"><span class="built_in">connect</span>() 连接服务器</span><br><span class="line">sendto() </span><br><span class="line">recvfrom()   收发消息(udp不能使用recv和send函数)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Udp服务器客户端通信过程"><a href="#Udp服务器客户端通信过程" class="headerlink" title="Udp服务器客户端通信过程"></a>Udp服务器客户端通信过程</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Udp不需建立连接,所以不需要accept不需要<span class="built_in">connect</span>不需要<span class="built_in">listen</span></span><br><span class="line"></span><br><span class="line">服务器:</span><br><span class="line">socket()  创建套接字</span><br><span class="line">recvfrom()</span><br><span class="line">sendto()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">客户端:</span><br><span class="line">socket()  创建套接字</span><br><span class="line">sendto() </span><br><span class="line">recvfrom()</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<h2 id="非阻塞"><a href="#非阻塞" class="headerlink" title="非阻塞"></a>非阻塞</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">1）阻塞（Blocked）：当调用某个函数时，若操作条件不具备，函数会一直处于等待状态，程序的执行进程会在该函数调用处停顿，直到操作完成或发生错误为止。</span><br><span class="line"></span><br><span class="line">2）非阻塞（Nonblocked）：当调用某个函数时，无论操作条件是否具备，函数均会立即返回，程序的执行进程不会在该函数调用处停顿，而是继续执行。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">1）SOCK_DGRAM及SOCK_STREAM类型的套接字均可以工作在阻塞模式或非阻塞模式</span><br><span class="line"></span><br><span class="line">2）Linux中，创建套接字的同时可以指定工作模式，例如</span><br><span class="line"></span><br><span class="line">socket(AF_INET, SOCK_STREAM |  SOCK_NONBLOCK, 0)</span><br><span class="line"></span><br><span class="line">上述代码会创建非阻塞模式的套接字。默认情况下，新建的套接字工作在阻塞模式</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">如果要把工作在阻塞模式的套接字改为非阻塞模式,可以使用函数fcntl (下面参数里sockfd即为阻塞模式的套接字),</span><br><span class="line"></span><br><span class="line">(用法: 例如accept函数返回的套接字不能直接设置为非阻塞需要fcntl函数处理)</span><br><span class="line"></span><br><span class="line">fcntl(sockfd, F_SETFL, fcntl(sockfd, F_GETFL, 0) | O_NONBLOCK);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">1）非阻塞模式套接字的函数调用失败时，并不一定表示真的遇到了网络错误，应根据errno的值进行相应的处理</span><br><span class="line">2）若errno值为EAGAIN或EWOULDBLOCK，则表示操作条件目前并不具备，而不是遇到了网络错误</span><br><span class="line"></span><br><span class="line">        sockC &#x3D; accept(sock, (struct sockaddr*)&amp;addrC, &amp;sizeAddr);</span><br><span class="line"></span><br><span class="line">        if(-1 &#x3D;&#x3D; sockC)</span><br><span class="line">        &#123;</span><br><span class="line">            if(errno !&#x3D; EAGAIN &amp;&amp; errno !&#x3D; EWOULDBLOCK)</span><br><span class="line">            &#123;</span><br><span class="line">                printf(&quot;accept() error : %d -&gt; %s\n&quot;, errno, strerror(errno));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h2><h3 id="多线程创建管理"><a href="#多线程创建管理" class="headerlink" title="多线程创建管理"></a>多线程创建管理</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">头文件</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;pthread.h&gt;     编译时加上-pthtread参数</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">pthread_t</span> thread;</span><br><span class="line">pthread_create(&amp;thread,<span class="literal">NULL</span>,doThread,(<span class="keyword">void</span>*)arg);  <span class="comment">/*创建线程,线程id为thread*/</span></span><br><span class="line">pthread_detach(thread);        <span class="comment">/* 分离线程,意思是线程函数执行完毕后系统自动回收线程 */</span></span><br><span class="line">pthread_join(thread,<span class="literal">NULL</span>);          <span class="comment">/* 等待线程函数结束(直到线程函数结束,代码不会向下执行),可以接收线程函数的返回值(线程函数返回值为void* 所以可以返回任何值) */</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="多线程同步"><a href="#多线程同步" class="headerlink" title="多线程同步"></a>多线程同步</h3><p><strong>信号量</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">线程的信号量与进程间通信中使用的信号量的概念是一样，它是一种特殊的变量，它可以被增加或减少，但对其的关键访问被保证是原子操作。</span><br><span class="line">如果一个程序中有多个线程试图改变一个信号量的值，系统将保证所有的操作都将依次进行。</span><br><span class="line"></span><br><span class="line">信号量的函数都以sem_开头，线程中使用的基本信号量函数有<span class="number">4</span>个，它们都声明在头文件semaphore.h中。</span><br><span class="line"></span><br><span class="line"><span class="number">1.</span> sem_init函数 该函数用于创建信号量                                 <span class="function"><span class="keyword">int</span> <span class="title">sem_init</span><span class="params">(<span class="keyword">sem_t</span> *sem, <span class="keyword">int</span> pshared， <span class="keyword">unsigned</span> <span class="keyword">int</span> value)</span></span>;</span><br><span class="line"><span class="number">2.</span> sem_wait函数 该函数用于以原子操作的方式将信号量的值减<span class="number">1</span>。          <span class="function"><span class="keyword">int</span> <span class="title">sem_wait</span><span class="params">(<span class="keyword">sem_t</span> *sem)</span></span>;</span><br><span class="line"><span class="number">3.</span> sem_post函数 该函数用于以原子操作的方式将信号量的值加<span class="number">1</span>。          <span class="function"><span class="keyword">int</span> <span class="title">sem_post</span><span class="params">(<span class="keyword">sem_t</span> *sem)</span></span>;</span><br><span class="line"><span class="number">4.</span> sem_destroy函数 该函数用于对用完的信号量的清理                    <span class="function"><span class="keyword">int</span> <span class="title">sem_destroy</span><span class="params">(<span class="keyword">sem_t</span> *sem)</span></span>;</span><br><span class="line"></span><br><span class="line">sem_wait(); 到 sem_post(); 之间的代码是原子操作,不用管信号量的值是几,具体由操作系统管理</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>互斥量</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pthread_mutex_t</span> mutex;                           <span class="comment">/* 创建锁*/</span></span><br><span class="line">pthread_mutex_init(&amp;mutex, <span class="literal">NULL</span>);                <span class="comment">/* 初始化锁 */</span></span><br><span class="line">pthread_mutex_lock(&amp;mutex);                      <span class="comment">/* 上锁 */</span></span><br><span class="line">pthread_mutex_unlock(&amp;mutex);                    <span class="comment">/* 解锁*/</span></span><br><span class="line">pthread_mutex_destroy(&amp;mutex);                   <span class="comment">/* 销毁锁 */</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="select"><a href="#select" class="headerlink" title="select"></a>select</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/select.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> nfds, fd_set *<span class="keyword">restrict</span> readfds,</span></span></span><br><span class="line"><span class="function"><span class="params">           fd_set *<span class="keyword">restrict</span> writefds, fd_set *<span class="keyword">restrict</span> errorfds,</span></span></span><br><span class="line"><span class="function"><span class="params">           struct timeval *<span class="keyword">restrict</span> timeout)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  void FD_ZERO(fd_set *set) 将set清空为0</span><br><span class="line">  void FD_SET(int fd,fd_set *set) 将fd设置到set集合中去</span><br><span class="line">  void FD_CLR(int fd,fd_set *set) 将fd从set中清除出去</span><br><span class="line">  int FD_ISSET(int fd,fd_set *set) 判断文件描述符fd是否在set集合中( FD_ISSET() tests to see if a file descriptor is part of the set;)</span><br><span class="line"></span><br><span class="line">  __FD_SETSIZE 系统定义的宏,表示文件描述符最多个数,一般是<span class="number">1024</span>,也可以不加前面两个下划线即FD_SETSIZE</span><br><span class="line"></span><br><span class="line">使用过程:</span><br><span class="line"></span><br><span class="line">fd_set fsRead,fsRead2;           <span class="comment">//集合</span></span><br><span class="line"><span class="keyword">int</span> Maxfd;               <span class="comment">//最大描述符</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> <span class="title">tmot</span>;</span>     <span class="comment">//超时时间</span></span><br><span class="line"><span class="keyword">int</span> countFd;             <span class="comment">//select返回值,(满足条件的描述符个数)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">FD_ZERO(&amp;fsRead);         <span class="comment">//清空集合</span></span><br><span class="line">FD_SET(listenfd,&amp;fsRead); <span class="comment">//将监听套接字放在集合中</span></span><br><span class="line">Maxfd = listenfd;</span><br><span class="line"></span><br><span class="line"><span class="comment">//主循环</span></span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//备份</span></span><br><span class="line">	fsRead2 = fsRead;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//设置超时时间</span></span><br><span class="line">	tmot.tv_sec = <span class="number">0</span>;      <span class="comment">//秒          </span></span><br><span class="line">	tmot.tv_usec = <span class="number">200000</span>; <span class="comment">//微秒</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//select函数</span></span><br><span class="line">	countFD = select(maxFD + <span class="number">1</span>, &amp;fsRead2, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;tmot);   <span class="comment">//返回值:   返回发生事件的套接字的个数</span></span><br><span class="line">	<span class="keyword">if</span>(countFD == <span class="number">-1</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"select() error : %d -&gt; %s\n"</span>, errno, strerror(errno));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(countFD == <span class="number">0</span>) &#123; <span class="comment">/* 无就绪描述符,输出超时 */</span></span><br><span class="line">        <span class="comment">//time out</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"select() timeout\n"</span>);</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(k = <span class="number">0</span>; k &lt; maxFD + <span class="number">1</span>; k++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(FD_ISSET(k, &amp;fsRead2))   <span class="comment">/* 判断k是否在集合fsRead2中 */</span></span><br><span class="line">            &#123;</span><br><span class="line">				<span class="keyword">if</span>(k == listenfd)&#123;</span><br><span class="line">					<span class="comment">//发生事件的是监听套接字,说明有连接到来</span></span><br><span class="line">					<span class="keyword">int</span> connfd = accept();</span><br><span class="line">				    <span class="comment">/* 把创建的连接描述符放在集合里 */</span></span><br><span class="line">                    FD_SET(sockC, &amp;fsRead);</span><br><span class="line">                    <span class="keyword">if</span>(sockC &gt; maxFD)</span><br><span class="line">                    maxFD = sockC;</span><br><span class="line"></span><br><span class="line">				&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">					<span class="comment">//发生事件的是连接套接字,接收发来的消息,并回复</span></span><br><span class="line">					recv();  </span><br><span class="line">					send();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="winsock编程"><a href="#winsock编程" class="headerlink" title="winsock编程"></a>winsock编程</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="number">1</span>）准备WinSock环境</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span>  WSAStartup（WORD wVersionRequested， LPWSADATA  lpWSAData）</span><br><span class="line"></span><br><span class="line">a）参数<span class="number">1</span>：为期待的版本，可以使用MAKEWORD（x，y）来指定版本，其中x为主版本，占据低字节，y为次版本，占据高字节，目前均使用<span class="number">2.0</span>以上版本，常用<span class="number">2.2</span>；</span><br><span class="line"></span><br><span class="line">b）参数<span class="number">2</span>：指向一个WSADATA结构体，用于填充返回相关信息</span><br><span class="line"></span><br><span class="line">c）返回值：操作成功，返回<span class="number">0</span>，否则返回错误代码。注意，在WinSock执行环境未准备好时，不能调用WSAGetLastError（）</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="number">2</span>）清除WinSock环境</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> WSACleanup（<span class="keyword">void</span>）</span><br><span class="line"></span><br><span class="line">若成功返回<span class="number">0</span>，否则返回SOCKET_ERROR。一般不会出错。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="number">3</span>）获取错误</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span>  WSAGetLastError（<span class="keyword">void</span>）</span><br><span class="line"></span><br><span class="line">返回当前线程上次WinSock操作失败时的具体错误代码。大部分WinSock错误代码以WSAE作为前辍</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="number">4</span>）设置I/O模式</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span>  ioctlsocket（SOCKET  s，<span class="keyword">long</span>  cmd，u_long  FAR  *argp）</span><br><span class="line"></span><br><span class="line">a）s为指定套接字</span><br><span class="line"></span><br><span class="line">b）cmd为要执行的命令</span><br><span class="line"></span><br><span class="line">c）argp指向命令需要的参数</span><br><span class="line"></span><br><span class="line">d）返回值：操作成功返回<span class="number">0</span>，否则返回SOCKET_ERROR</span><br><span class="line"></span><br><span class="line">e）设置为非阻塞模式时，cmd为FIONBIO，argp指向值为非<span class="number">0</span>的整型变量</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="number">5</span>）关闭套接字</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span>  closesocket（SOCKET  s）</span><br><span class="line"></span><br><span class="line">若操作成功返回<span class="number">0</span>，否则返回SOCKET_ERROR。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;winsock2.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> comment(lib,<span class="meta-string">"ws2_32"</span>)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">WSADATA</span> <span class="title">wsd</span>;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> code = WSAStartup(<span class="number">0x0202</span>,&amp;wsd);    <span class="comment">//0x0202表示版本</span></span><br><span class="line">	<span class="keyword">if</span>(code != <span class="number">0</span>)&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"WSAStartup error: %d"</span>,code);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	其他与Linux一样</span><br><span class="line"></span><br><span class="line">	closesocket(sockfd);</span><br><span class="line">	</span><br><span class="line">	WSACleanup();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="字符串处理"><a href="#字符串处理" class="headerlink" title="字符串处理"></a>字符串处理</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">头文件</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">strstr</span>(str,<span class="string">"hello"</span>);    在字符串str中找到hello字符串返回hello字符串,找不到返回<span class="literal">NULL</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">strchr</span>(str,<span class="string">'\n'</span>);       在字符串str中寻找回车符</span><br><span class="line"></span><br><span class="line"><span class="built_in">strcmp</span>(str,<span class="string">"hello"</span>);    如果str字符串与<span class="string">"hello"</span>字符串相等,那么返回<span class="number">0</span>,其他返回值不常用</span><br><span class="line"></span><br><span class="line"><span class="built_in">strcat</span>(str,<span class="string">"hello"</span>);    在字符串str后面拼接上hello字符</span><br><span class="line"></span><br><span class="line"><span class="built_in">strcpy</span>(str,<span class="string">"hello"</span>);    把字符串hello拷贝给str,str原来的值被覆盖</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">指针,指针也是处理字符串很好用的方式</span><br><span class="line"></span><br><span class="line">例如:分割http请求第一行</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">GET /index.html HTTP/<span class="number">1.1</span></span><br><span class="line"></span><br><span class="line">首先提取出http请求的第一行</span><br><span class="line"></span><br><span class="line">假设整个请求存在request数组里</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> *p = request;</span><br><span class="line"><span class="keyword">char</span> *q = <span class="built_in">strchr</span>(request,<span class="string">'\n'</span>);</span><br><span class="line"></span><br><span class="line">指针p和q之间就是这一行数据</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> method[<span class="number">1024</span>];</span><br><span class="line"><span class="keyword">char</span> uri[<span class="number">1024</span>];</span><br><span class="line"><span class="keyword">char</span> version[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">Split(&amp;p,q,method);   分离出方法</span><br><span class="line">Split(&amp;p,q,uri);</span><br><span class="line">Split(&amp;p,q,version);</span><br><span class="line"></span><br><span class="line">最终结果: </span><br><span class="line">method 存放  GET</span><br><span class="line">uri 存放/index.html</span><br><span class="line">version存放HTTP/<span class="number">1.1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Split</span><span class="params">(<span class="keyword">char</span> **p,<span class="keyword">char</span> *q,<span class="keyword">char</span> *s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>((*p) != q) &#123;</span><br><span class="line">        <span class="keyword">if</span>( (**p) == <span class="string">' '</span> ) &#123;</span><br><span class="line">            (*p)++;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        *(s++) = *((*p)++);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="简答题"><a href="#简答题" class="headerlink" title="简答题"></a>简答题</h2><p>listen backlog作用</p>
+<p>recv 返回值</p>
+<p><strong>epoll</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#include <span class="tag">&lt;<span class="name">sys</span>/<span class="attr">epoll.h</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2）创建epoll实例</span><br><span class="line"></span><br><span class="line">int epoll_create（int size）</span><br><span class="line"></span><br><span class="line">epoll模型由内核管理，需要向内核申请创建实例。参数size为实例大小，可以理解为所管理描述符的数量。在Linux 2.6.8以后，size会由系统自动调整，该参数仅仅为保持兼容而存在。</span><br><span class="line"></span><br><span class="line">若操作成功，会返回引用该实例的描述符，否则返回-1。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">3）注册描述符及事件</span><br><span class="line"></span><br><span class="line">int epoll_ctl（int epfd, int op, int fd, struct epoll_event *event）</span><br><span class="line"></span><br><span class="line">epoll模型将管理若干描</span><br><span class="line">述符及关心的事件（与select作用类似），这些管理功能均通过该函数表示。操作成功，返回0，否则返回-1。各参数含义：</span><br><span class="line"></span><br><span class="line">a）epfd为epoll实例描述符</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">b）fd为要管理的描述符</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">c）event为该描述符上关心的事件，类型为结构体类型：</span><br><span class="line"></span><br><span class="line">struct epoll_event&#123;</span><br><span class="line"></span><br><span class="line">　　__uint32_t     events;  </span><br><span class="line"></span><br><span class="line">　　epoll_data_t  data;</span><br><span class="line"></span><br><span class="line">｝；</span><br><span class="line"></span><br><span class="line">events是由以下事件标志通过 | 运算得到的组合</span><br><span class="line"></span><br><span class="line">EPOLLIN：可读数据（有数据到达）</span><br><span class="line"></span><br><span class="line">EPOLLOUT：可写数据（可发送给对方）</span><br><span class="line"></span><br><span class="line">EPOLLPRI：对于流式套接字，收到了OOB数据</span><br><span class="line"></span><br><span class="line">EPOLLRDHUP：对方调用了close()或shutdown()，在ET模式下很有用</span><br><span class="line"></span><br><span class="line">EPOLLERR：发生错误的情况</span><br><span class="line"></span><br><span class="line">EPOLLET：启用ET（Edge Triggered，边缘触发，状态发生变化）模式，默认模式为LT（Level Triggered，条件或水平触发，状态不变，但总满足“操作就绪”的要求）</span><br><span class="line"></span><br><span class="line">EPOLLONESHOT：只使用一次，单独使用无意义</span><br><span class="line"></span><br><span class="line">除上述标志以外，Linux的不同版本还增加了其它事件标志。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">data成员表示事件对应的数据，其定义为：</span><br><span class="line"></span><br><span class="line">typedef union epoll_data&#123;</span><br><span class="line"></span><br><span class="line">　　void           *ptr;</span><br><span class="line"></span><br><span class="line">　　int              fd;</span><br><span class="line"></span><br><span class="line">　　__uint32_t  u32;</span><br><span class="line"></span><br><span class="line">　　__uint64_t  u64;</span><br><span class="line"></span><br><span class="line">｝epoll_data_t；</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">d）op表示要执行的管理操作，有三个：EPOLL_CTL_XXX，其中XXX是ADD、DEL、MOD三者之一，分别表示新注册、删除已有、修改已有</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">4）进行监控</span><br><span class="line"></span><br><span class="line">int epoll_wait（int epfd, struct epoll_event *events, int maxevents, int timeout）</span><br><span class="line"></span><br><span class="line">执行完成后，若有描述符上期待的事件发生，返回描述数个数；若超时，返回0；若出错，返回-1。参数含义为：</span><br><span class="line"></span><br><span class="line">a）epfd，epoll实例的描述符</span><br><span class="line"></span><br><span class="line">b）events，用户动态申请的内存空间，用于存放产生事件的描述符等信息，若有n个描述符上产生了期待的事件，这n个描述符的相关信息存放在events的前n个元素中</span><br><span class="line"></span><br><span class="line">c）maxevents，events空间大小</span><br><span class="line"></span><br><span class="line">d）timeout，该参数与select模型中的不同，它以毫秒为单位设置时间间隔。若为0，调用会立即返回；若为-1，则无限期等待，直至出错或有描述符发生事件；若为其它值，则会等待指定的时间间隔，在此时间内，若有事件发生，会返回，否则会等到超时再返回。该参数设置会影响性能</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">一、数据报套接字的两种通信模式</span><br><span class="line"></span><br><span class="line">1、客户机/服务器模式</span><br><span class="line"></span><br><span class="line">也可称为主从模式，服务器不主动向客户机发送数据，而是处于等待状态，客户机主动发起数据通信的过程，类似于流式套接字的工作模式。</span><br><span class="line"></span><br><span class="line">在该模式中，服务器需要绑定操作，客户机不需要。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">2、对等模式</span><br><span class="line"></span><br><span class="line">既向不特定主机发送信息，也接收不特定主机发送来的信息。</span><br><span class="line"></span><br><span class="line">在该模式中，参与通信方均需要绑定操作。</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">2、epoll模型</span><br><span class="line"></span><br><span class="line">1）epoll是Linux上的高性能I/O模型。Kqueue是FreeBSD系统中的模型，Windows是IOCP模型。</span><br><span class="line"></span><br><span class="line">2）下图中体现select与epoll模型性能的差异，很明显，当连接数量较大时，select模型的性能明显下降，epoll模型的性能比较稳定，不会随着管理描述数量的增加出现明显性能下降的情况。</span><br><span class="line"></span><br><span class="line">3）epoll适用于连接数量较多，但活动连接数量相对较少的情况。</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1、WSAAsyncSelect概述</span><br><span class="line"></span><br><span class="line">1）当协议栈检测到某个套接字上有数据到达（事件）时，便会向该套接字所属应用发送通知消息，应用收到消息后再进行处理。这种方式使用起来非常自然，也符合Windows系统的特性，即事件（套接字状态变化） -&gt; 消息传递（向应用发送消息） -&gt; 响应（应用程序处理）。</span><br><span class="line"></span><br><span class="line">2）WSAAsyncSelect是另一种I/O复用模型，非常适合GUI界面的应用。</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">3、select模型</span><br><span class="line"></span><br><span class="line">1）该关注的套接字（描述符）存储在fd_set集合中，select模型会监控一段时间内集合中所有有效的套接字是否“操作就绪”，若是会保留下来，否则会将该套接字移出集合，对于仍然存在于集合中的套接字，可以直接进行相应的操作，而不必再花时间等待。</span><br><span class="line"></span><br><span class="line">2）对套接字的关注只有三种类型：数据是否可读？数据是否可写？是否发生错误？为方便，模型按感兴趣的类型将套接字集合分为三种，某个套接字可以只加入一个集合，也可以同时加入多个集合。</span><br></pre></td></tr></table></figure>
+
+
+<hr>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TIME_WAIT出现的原因</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/06/%E5%89%91%E6%8C%87offer-01/" rel="prev" title="剑指offer_01">
+      <i class="fa fa-chevron-left"></i> 剑指offer_01
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言-笔记"><span class="nav-number">1.</span> <span class="nav-text">前言: 笔记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数总结"><span class="nav-number">2.</span> <span class="nav-text">函数总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tcp-服务器客户端通信过程"><span class="nav-number">2.1.</span> <span class="nav-text">Tcp 服务器客户端通信过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Udp服务器客户端通信过程"><span class="nav-number">2.2.</span> <span class="nav-text">Udp服务器客户端通信过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非阻塞"><span class="nav-number">3.</span> <span class="nav-text">非阻塞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程"><span class="nav-number">4.</span> <span class="nav-text">多线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#多线程创建管理"><span class="nav-number">4.1.</span> <span class="nav-text">多线程创建管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多线程同步"><span class="nav-number">4.2.</span> <span class="nav-text">多线程同步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#select"><span class="nav-number">5.</span> <span class="nav-text">select</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#winsock编程"><span class="nav-number">6.</span> <span class="nav-text">winsock编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串处理"><span class="nav-number">7.</span> <span class="nav-text">字符串处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简答题"><span class="nav-number">8.</span> <span class="nav-text">简答题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hu"
+      src="/images/head.jpg">
+  <p class="site-author-name" itemprop="name">Hu</p>
+  <div class="site-description" itemprop="description">Welcome!</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/humancloud" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;humancloud" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/humancloud@126.com" title="E-Mail → humancloud@126.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/yourname" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="skype:yourname?call|chat" title="Skype → skype:yourname?call|chat" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i>Skype</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://humancloud.github.io/" title="https:&#x2F;&#x2F;humancloud.github.io&#x2F;">blog</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/weixin_42205814" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_42205814" rel="noopener" target="_blank">csdn</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://space.bilibili.com/266625831" title="https:&#x2F;&#x2F;space.bilibili.com&#x2F;266625831" rel="noopener" target="_blank">bilibili</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hu</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">16k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">15 mins.</span>
+</div>
+
+
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+
+
+
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<!-- 动态图效果 -->
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+
+<!-- 页面点击小红心这个要在最末尾 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+</body>
+</html>
