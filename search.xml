@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>这是一篇示例文章</title>
+    <url>/2020/04/05/example/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p><a href="www.github.com">Hexo博客美化配置</a>,这篇文章讲解了,Hexo博客的美化与配置</p>
+</blockquote>
+<a id="more"></a>
+
+
+
+<h2 id="标题1"><a href="#标题1" class="headerlink" title="标题1"></a>标题1</h2><p>内容1</p>
+<h2 id="标题2"><a href="#标题2" class="headerlink" title="标题2"></a>标题2</h2><p>内容2</p>
+<p>如果您喜欢我的文章,欢迎关注下面的我滴公众号</p>
+]]></content>
+  </entry>
+  <entry>
     <title>C语言宏实现max</title>
     <url>/2020/10/04/C%E8%AF%AD%E8%A8%80%E5%AE%8F%E5%AE%9E%E7%8E%B0max/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>C语言宏功能强大,但一不小心就会用错,许多经典书籍都曾讲过C语言宏的强大功能,此篇文章是参考C陷阱与缺陷书籍和网上其他文章总结的</p>
@@ -23,21 +38,6 @@
       <tags>
         <tag>笔记</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>这是一篇示例文章</title>
-    <url>/2020/04/05/example/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
-<p><a href="www.github.com">Hexo博客美化配置</a>,这篇文章讲解了,Hexo博客的美化与配置</p>
-</blockquote>
-<a id="more"></a>
-
-
-
-<h2 id="标题1"><a href="#标题1" class="headerlink" title="标题1"></a>标题1</h2><p>内容1</p>
-<h2 id="标题2"><a href="#标题2" class="headerlink" title="标题2"></a>标题2</h2><p>内容2</p>
-<p>如果您喜欢我的文章,欢迎关注下面的我滴公众号</p>
-]]></content>
   </entry>
   <entry>
     <title>mianshi</title>
@@ -356,6 +356,17 @@
       </tags>
   </entry>
   <entry>
+    <title>pip更换国内源</title>
+    <url>/2020/03/09/pip/</url>
+    <content><![CDATA[<p>pip更换国内源将会有几兆每秒的速度</p>
+<p><strong>步骤</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mkdir ~/.pip</span><br><span class="line">vim ~/.pip/pip.conf</span><br><span class="line"></span><br><span class="line">打开文件后,输入以下信息,即可使用清华源</span><br><span class="line">[global]</span><br><span class="line">index-url = https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">[install]</span><br><span class="line">trusted-host = https://pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用easy_install来安装模块</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">easy_install 换源</span><br><span class="line">cd /root          注意要放到/root目录下</span><br><span class="line">vi .pydistutils.cfg 打开配置文件</span><br><span class="line"></span><br><span class="line">[easy_install]</span><br><span class="line">index-url=http://mirrors.aliyun.com/pypi/simple/</span><br><span class="line">find-links=http://mirrors.aliyun.com/pypi/simple/</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
     <title>network</title>
     <url>/2020/03/22/network/</url>
     <content><![CDATA[<h1 id="作业"><a href="#作业" class="headerlink" title="作业:"></a>作业:</h1><h4 id="1、查看listen的man-page信息，了解backlog的作用，下次找同学回答。"><a href="#1、查看listen的man-page信息，了解backlog的作用，下次找同学回答。" class="headerlink" title="1、查看listen的man page信息，了解backlog的作用，下次找同学回答。"></a>1、查看listen的man page信息，了解backlog的作用，下次找同学回答。</h4><figure class="highlight html"><table><tr><td class="code"><pre><span class="line">backlog::允许同时与服务器连接的客户端数量</span><br><span class="line">    </span><br><span class="line">查看系统默认backlog:</span><br><span class="line">cat /proc/sys/net/ipv4/tcp_max_syn_backlog</span><br><span class="line">    </span><br><span class="line">监听端口后,被动套接字等待连接(listen函数把套接字变成被动套接字,accept函数阻塞等待连接),</span><br><span class="line">此时系统中维护着两个队列,第一个队列存放的是已建立连接的套接字(即完成三次握手后的established),</span><br><span class="line">第二个队列是未建立连接的套接字(处于三次握手中的syn_rcvd),</span><br><span class="line">每次accept会将第一个队列中的套接字返回,进行通信,以完成网络传输</span><br><span class="line"></span><br><span class="line">linux2.2以前,backlog表示两个队列总和的长度</span><br><span class="line">linux2.2以后,backlog表示已完成连接的队列的长度</span><br></pre></td></tr></table></figure>
@@ -384,17 +395,6 @@
 
 
 <h4 id="4、为服务端加上特殊的“停止服务”功能。-确定对方是管理员才退出-否则不退出"><a href="#4、为服务端加上特殊的“停止服务”功能。-确定对方是管理员才退出-否则不退出" class="headerlink" title="4、为服务端加上特殊的“停止服务”功能。(确定对方是管理员才退出,否则不退出)"></a>4、为服务端加上特殊的“停止服务”功能。(确定对方是管理员才退出,否则不退出)</h4><h1 id="本节课内容"><a href="#本节课内容" class="headerlink" title="本节课内容:"></a>本节课内容:</h1><figure class="highlight html"><table><tr><td class="code"><pre><span class="line">udp: recvfrom不一定接收到对端发来的信息,因为udp不检查对端是否收到,tcp检查吗</span><br><span class="line"></span><br><span class="line">浏览器访问www.qq.com:7777是访问不了的,因为服务器上没有应用程序运行在7777端口</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">服务端:</span><br><span class="line"></span><br><span class="line">1、创建流式套接字，目的是监听连接请求</span><br><span class="line"></span><br><span class="line">2、绑定对外公布的地址信息</span><br><span class="line"></span><br><span class="line">3、确定连接请求队列大小，进入监听套接字监听状态</span><br><span class="line"></span><br><span class="line">4、当有客户端的连接请求到来时，创建一个为该客户端提供1对1服务的流式套接字，它只起数据传输作用，称为响应套接字</span><br><span class="line"></span><br><span class="line">5、响应套接字与客户端套接字成为通信双方，这个通信是有连接的，在此基础上，可以按照通信规程（业务逻辑）传输数据</span><br><span class="line"></span><br><span class="line">5.1、发送数据：将数据从应用程序缓冲区复制到套接字的发送缓冲区，至于何时真正发送到对方，由协议栈决定</span><br><span class="line"></span><br><span class="line">5.2、接收数据：将数据从套接字的接收缓冲区移动到应用程序的缓冲区，</span><br><span class="line"></span><br><span class="line">6、数据传输完成后，可关闭响应套接字</span><br><span class="line"></span><br><span class="line">7、一般情况下，不关闭监听套接字，除非有特殊要求</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">客户端:</span><br><span class="line"></span><br><span class="line">1、创建流式套接字</span><br><span class="line"></span><br><span class="line">2、根据服务端公布的地址信息，连接到服务端</span><br><span class="line"></span><br><span class="line">3、连接成功后，可以按照通信规程（业务逻辑）传输数据</span><br><span class="line"></span><br><span class="line">3.1、发送数据：将数据从应用程序缓冲区复制到套接字的发送缓冲区，至于何时真正发送到对方，由协议栈决定</span><br><span class="line"></span><br><span class="line">3.2、接收数据：将数据从套接字的接收缓冲区移动到应用程序的缓冲区，</span><br><span class="line"></span><br><span class="line">4、数据传输完成后，可关闭套接字</span><br></pre></td></tr></table></figure>
-]]></content>
-  </entry>
-  <entry>
-    <title>pip更换国内源</title>
-    <url>/2020/03/09/pip/</url>
-    <content><![CDATA[<p>pip更换国内源将会有几兆每秒的速度</p>
-<p><strong>步骤</strong></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mkdir ~/.pip</span><br><span class="line">vim ~/.pip/pip.conf</span><br><span class="line"></span><br><span class="line">打开文件后,输入以下信息,即可使用清华源</span><br><span class="line">[global]</span><br><span class="line">index-url = https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">[install]</span><br><span class="line">trusted-host = https://pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
-
-<p><strong>使用easy_install来安装模块</strong></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">easy_install 换源</span><br><span class="line">cd /root          注意要放到/root目录下</span><br><span class="line">vi .pydistutils.cfg 打开配置文件</span><br><span class="line"></span><br><span class="line">[easy_install]</span><br><span class="line">index-url=http://mirrors.aliyun.com/pypi/simple/</span><br><span class="line">find-links=http://mirrors.aliyun.com/pypi/simple/</span><br></pre></td></tr></table></figure>
 ]]></content>
   </entry>
   <entry>
