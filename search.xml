@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>这是一篇示例文章</title>
+    <url>/2020/04/05/example/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p><a href="www.github.com">Hexo博客美化配置</a>,这篇文章讲解了,Hexo博客的美化与配置</p>
+</blockquote>
+<a id="more"></a>
+
+
+
+<h2 id="标题1"><a href="#标题1" class="headerlink" title="标题1"></a>标题1</h2><p>内容1</p>
+<h2 id="标题2"><a href="#标题2" class="headerlink" title="标题2"></a>标题2</h2><p>内容2</p>
+<p>如果您喜欢我的文章,欢迎关注下面的我滴公众号</p>
+]]></content>
+  </entry>
+  <entry>
     <title>C语言宏实现max</title>
     <url>/2020/10/04/C%E8%AF%AD%E8%A8%80%E5%AE%8F%E5%AE%9E%E7%8E%B0max/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>C语言宏功能强大,但一不小心就会用错,许多经典书籍都曾讲过C语言宏的强大功能,此篇文章是参考C陷阱与缺陷书籍和网上其他文章总结的</p>
@@ -25,27 +40,13 @@
       </tags>
   </entry>
   <entry>
-    <title>这是一篇示例文章</title>
-    <url>/2020/04/05/example/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
-<p><a href="www.github.com">Hexo博客美化配置</a>,这篇文章讲解了,Hexo博客的美化与配置</p>
-</blockquote>
-<a id="more"></a>
-
-
-
-<h2 id="标题1"><a href="#标题1" class="headerlink" title="标题1"></a>标题1</h2><p>内容1</p>
-<h2 id="标题2"><a href="#标题2" class="headerlink" title="标题2"></a>标题2</h2><p>内容2</p>
-<p>如果您喜欢我的文章,欢迎关注下面的我滴公众号</p>
-]]></content>
-  </entry>
-  <entry>
     <title>mianshi</title>
     <url>/2020/10/20/mianshi/</url>
     <content><![CDATA[<h1 id="1-网络编程系统编程部分"><a href="#1-网络编程系统编程部分" class="headerlink" title="1. 网络编程系统编程部分"></a>1. 网络编程系统编程部分</h1><p><strong>常见面试题目</strong></p>
 <p><strong>1. TCP和UDP的区别</strong></p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(1) TCP面向连接（如打电话要先拨号建立连接）;UDP是无连接的，即发送数据之前不需要建立连接</span><br><span class="line">(2) TCP提供可靠的服务。也就是说，通过TCP连接传送的数据，无差错，不丢失，不重复，且按序到达;UDP尽最大努力交付，即不保证可靠交付</span><br><span class="line">(3) TCP面向字节流，实际上是TCP把数据看成一连串无结构的字节流;UDP是面向报文的</span><br><span class="line">UDP没有拥塞控制，因此网络出现拥塞不会使源主机的发送速率降低（对实时应用很有用，如IP电话，实时视频会议等）</span><br><span class="line">(4) 每一条TCP连接只能是点到点的;UDP支持一对一，一对多，多对一和多对多的交互通信</span><br><span class="line">(5) TCP首部开销20字节;UDP的首部开销小，只有8个字节</span><br><span class="line">(6) TCP的逻辑通信信道是全双工的可靠信道，UDP则是不可靠信道。</span><br></pre></td></tr></table></figure>
 
+<a id="more"></a>
 
 
 <p><strong>流量控制与拥塞控制</strong></p>
