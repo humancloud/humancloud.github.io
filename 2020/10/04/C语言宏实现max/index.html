@@ -29,7 +29,7 @@
 <meta property="og:description" content="前言C语言宏功能强大,但一不小心就会用错,许多经典书籍都曾讲过C语言宏的强大功能,此篇文章是参考C陷阱与缺陷书籍和网上其他文章总结的">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-10-04T14:13:00.000Z">
-<meta property="article:modified_time" content="2020-10-20T15:58:12.317Z">
+<meta property="article:modified_time" content="2020-10-30T14:58:43.797Z">
 <meta property="article:author" content="Hu">
 <meta property="article:tag" content="笔记">
 <meta name="twitter:card" content="summary">
@@ -225,7 +225,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-20 23:58:12" itemprop="dateModified" datetime="2020-10-20T23:58:12+08:00">2020-10-20</time>
+                <time title="Modified: 2020-10-30 22:58:43" itemprop="dateModified" datetime="2020-10-30T22:58:43+08:00">2020-10-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -250,7 +250,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>334</span>
+              <span>347</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -282,6 +282,10 @@
 
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Linux Kernel 版</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> max(x,y) (&#123;                \</span></span><br><span class="line">		typeof(x) _max1 = (x);     \</span><br><span class="line">		typeof(y) _max2 = (y);     \</span><br><span class="line">		(<span class="keyword">void</span>)(&amp;_max1 == &amp;_max2);  \</span><br><span class="line">		_max1 &gt; _max2 ? _max1:_max2;&#125;)</span><br><span class="line"></span><br><span class="line">x或y只会被计算一次</span><br></pre></td></tr></table></figure>
 
+
+
+
+<p>assert宏   ,   swap宏</p>
 
     </div>
 
@@ -400,14 +404,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -480,12 +484,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">28k</span>
+    <span title="Symbols count total">34k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">25 mins.</span>
+    <span title="Reading time total">30 mins.</span>
 </div>
 
 
