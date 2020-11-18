@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>pip更换国内源</title>
-    <url>/2020/03/09/pip/</url>
-    <content><![CDATA[<p>pip更换国内源可加快下载速度</p>
-<p><strong>步骤</strong></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mkdir ~/.pip</span><br><span class="line">vim ~/.pip/pip.conf</span><br><span class="line"></span><br><span class="line">打开文件后,输入以下信息,即可使用清华源</span><br><span class="line">[global]</span><br><span class="line">index-url = https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">[install]</span><br><span class="line">trusted-host = https://pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
-
-<p><strong>使用easy_install来安装模块</strong></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">easy_install 换源</span><br><span class="line">cd /root          注意要放到/root目录下</span><br><span class="line">vi .pydistutils.cfg 打开配置文件</span><br><span class="line"></span><br><span class="line">[easy_install]</span><br><span class="line">index-url=http://mirrors.aliyun.com/pypi/simple/</span><br><span class="line">find-links=http://mirrors.aliyun.com/pypi/simple/</span><br></pre></td></tr></table></figure>
-]]></content>
-  </entry>
-  <entry>
     <title>C语言宏实现max</title>
     <url>/2020/10/04/C%E8%AF%AD%E8%A8%80%E5%AE%8F%E5%AE%9E%E7%8E%B0max/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>C语言宏功能强大,但一不小心就会用错,许多经典书籍都曾讲过C语言宏的强大功能,此篇文章是参考C陷阱与缺陷书籍和网上其他文章总结的</p>
@@ -38,5 +27,16 @@
       <tags>
         <tag>笔记</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>pip更换国内源</title>
+    <url>/2020/03/09/pip/</url>
+    <content><![CDATA[<p>pip更换国内源可加快下载速度</p>
+<p><strong>步骤</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mkdir ~/.pip</span><br><span class="line">vim ~/.pip/pip.conf</span><br><span class="line"></span><br><span class="line">打开文件后,输入以下信息,即可使用清华源</span><br><span class="line">[global]</span><br><span class="line">index-url = https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">[install]</span><br><span class="line">trusted-host = https://pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用easy_install来安装模块</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">easy_install 换源</span><br><span class="line">cd /root          注意要放到/root目录下</span><br><span class="line">vi .pydistutils.cfg 打开配置文件</span><br><span class="line"></span><br><span class="line">[easy_install]</span><br><span class="line">index-url=http://mirrors.aliyun.com/pypi/simple/</span><br><span class="line">find-links=http://mirrors.aliyun.com/pypi/simple/</span><br></pre></td></tr></table></figure>
+]]></content>
   </entry>
 </search>
