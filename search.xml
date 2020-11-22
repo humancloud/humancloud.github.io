@@ -78,21 +78,6 @@
       </tags>
   </entry>
   <entry>
-    <title>IOCCC分享</title>
-    <url>/2020/11/18/IOCCC%E5%88%86%E4%BA%AB/</url>
-    <content><![CDATA[<p><a href="http://www.ioccc.org/" target="_blank" rel="noopener">IOCCC官方网站</a><br><a href="http://www.ioccc.org/years.html" target="_blank" rel="noopener">下载代码</a></p>
-<p>由于下载代码需要上外网,所以我将1984-2019的所有代码,放在了github上.</p>
-<p><a href="https://github.com/humancloud/IOCCC1984-now.git" target="_blank" rel="noopener">代码</a></p>
-<a id="more"></a>
-]]></content>
-      <categories>
-        <category>IOCCC</category>
-      </categories>
-      <tags>
-        <tag>笔记</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>IOCCC1984-02</title>
     <url>/2020/11/20/IOCCC1984-02/</url>
     <content><![CDATA[<p>作者： Sjoerd Mullender  and   Robbert van Renesse<br>源文件： mullender.c</p>
@@ -154,5 +139,20 @@
 <p><strong>使用easy_install来安装模块</strong></p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">easy_install 换源</span><br><span class="line">cd /root          注意要放到/root目录下</span><br><span class="line">vi .pydistutils.cfg 打开配置文件</span><br><span class="line"></span><br><span class="line">[easy_install]</span><br><span class="line">index-url=http://mirrors.aliyun.com/pypi/simple/</span><br><span class="line">find-links=http://mirrors.aliyun.com/pypi/simple/</span><br></pre></td></tr></table></figure>
 ]]></content>
+  </entry>
+  <entry>
+    <title>IOCCC分享</title>
+    <url>/2020/11/18/IOCCC%E5%88%86%E4%BA%AB/</url>
+    <content><![CDATA[<p><a href="http://www.ioccc.org/" target="_blank" rel="noopener">IOCCC官方网站</a><br><a href="http://www.ioccc.org/years.html" target="_blank" rel="noopener">下载代码</a></p>
+<p>由于下载代码需要上外网,所以我将1984-2019的所有代码,放在了github上.</p>
+<p><a href="https://github.com/humancloud/IOCCC1984-now.git" target="_blank" rel="noopener">代码</a></p>
+<a id="more"></a>
+]]></content>
+      <categories>
+        <category>IOCCC</category>
+      </categories>
+      <tags>
+        <tag>笔记</tag>
+      </tags>
   </entry>
 </search>
