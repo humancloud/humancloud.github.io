@@ -1,9 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>C指针常用</title>
+    <url>/2020/11/27/C%E6%8C%87%E9%92%88%E5%B8%B8%E7%94%A8/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>C表达式</title>
     <url>/2020/11/18/C%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
     <content><![CDATA[]]></content>
+      <categories>
+        <category>C语言</category>
+      </categories>
+      <tags>
+        <tag>笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>C语言常用宏实现</title>
+    <url>/2020/10/04/C%E8%AF%AD%E8%A8%80%E5%B8%B8%E7%94%A8%E5%AE%8F/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>C语言宏功能强大,但一不小心就会用错,许多经典书籍都曾讲过C语言宏的强大功能,此篇文章是参考C陷阱与缺陷书籍和网上其他文章总结的</p>
+<a id="more"></a>
+
+
+
+
+
+<p>根据书籍写此篇文章</p>
+<h2 id="编程常用宏-常更新"><a href="#编程常用宏-常更新" class="headerlink" title="编程常用宏(常更新)"></a>编程常用宏(常更新)</h2><p><strong>max函数宏</strong></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">错误版</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> max(a,b) ((a)&gt;(b))?(a):(b)</span></span><br><span class="line"></span><br><span class="line">a或b会被计算两次,如果每次计算a或b都改变,那么最后得到的结果与预想中的会不同</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Linux Kernel 版</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> max(x,y) (&#123;                \</span></span><br><span class="line">		typeof(x) _max1 = (x);     \</span><br><span class="line">		typeof(y) _max2 = (y);     \</span><br><span class="line">		(<span class="keyword">void</span>)(&amp;_max1 == &amp;_max2);  \</span><br><span class="line">		_max1 &gt; _max2 ? _max1:_max2;&#125;)</span><br><span class="line"></span><br><span class="line">x或y只会被计算一次</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p>assert宏   ,   swap宏</p>
+]]></content>
       <categories>
         <category>C语言</category>
       </categories>
@@ -30,7 +63,7 @@
 
 <hr>
 <h2 id="疑问与解答"><a href="#疑问与解答" class="headerlink" title="疑问与解答"></a>疑问与解答</h2><ol>
-<li><p>为什么write函数当做系统调用,read不被当做系统调用那?<br> 由于read函数在源文件中有自己的定义所以不会被当做系统调用.</p>
+<li><p>为什么write函数当做系统调用,read不被当做系统调用那?<br> 由于用户自定义的函数优先,而read函数在源文件中有自己的定义所以不会被当做系统调用.<br> 注意: 如果在当今的C语言中包含了unistd.h头文件,那么里面有read函数的声明,再去自定义read函数会命名冲突,发生错误</p>
 </li>
 <li><p>为什么没有输出也没有报错那?</p>
 </li>
@@ -109,32 +142,28 @@
       </tags>
   </entry>
   <entry>
-    <title>C语言常用宏实现</title>
-    <url>/2020/10/04/C%E8%AF%AD%E8%A8%80%E5%B8%B8%E7%94%A8%E5%AE%8F/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>C语言宏功能强大,但一不小心就会用错,许多经典书籍都曾讲过C语言宏的强大功能,此篇文章是参考C陷阱与缺陷书籍和网上其他文章总结的</p>
+    <title>函数write与read</title>
+    <url>/2020/12/05/write-read/</url>
+    <content><![CDATA[<p>解析Linux编程常用的write和read函数</p>
 <a id="more"></a>
 
 
-
-
-
-<p>根据书籍写此篇文章</p>
-<h2 id="编程常用宏-常更新"><a href="#编程常用宏-常更新" class="headerlink" title="编程常用宏(常更新)"></a>编程常用宏(常更新)</h2><p><strong>max函数宏</strong></p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">错误版</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> max(a,b) ((a)&gt;(b))?(a):(b)</span></span><br><span class="line"></span><br><span class="line">a或b会被计算两次,如果每次计算a或b都改变,那么最后得到的结果与预想中的会不同</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Linux Kernel 版</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> max(x,y) (&#123;                \</span></span><br><span class="line">		typeof(x) _max1 = (x);     \</span><br><span class="line">		typeof(y) _max2 = (y);     \</span><br><span class="line">		(<span class="keyword">void</span>)(&amp;_max1 == &amp;_max2);  \</span><br><span class="line">		_max1 &gt; _max2 ? _max1:_max2;&#125;)</span><br><span class="line"></span><br><span class="line">x或y只会被计算一次</span><br></pre></td></tr></table></figure>
-
-
-
-
-<p>assert宏   ,   swap宏</p>
+<p>read（）函数将尝试从与打开文件描述符fildes关联的文件中读取nbyte字节到buf指向的缓冲区,但实际读取到的字节,取决于write端写了多少,或者取决于buffer的大小和第三个参数的大小.<br>write() 函数写nbyte字节数据到描述符,不管write的第二个参数的buffer是多大,都会像</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 ]]></content>
-      <categories>
-        <category>C语言</category>
-      </categories>
-      <tags>
-        <tag>笔记</tag>
-      </tags>
+  </entry>
+  <entry>
+    <title>pip更换国内源</title>
+    <url>/2020/03/09/pip/</url>
+    <content><![CDATA[<p>pip更换国内源可加快下载速度</p>
+<a id="more"></a>
+
+<p><strong>步骤</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mkdir ~/.pip</span><br><span class="line">vim ~/.pip/pip.conf</span><br><span class="line"></span><br><span class="line">打开文件后,输入以下信息,即可使用清华源</span><br><span class="line">[global]</span><br><span class="line">index-url = https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">[install]</span><br><span class="line">trusted-host = https://pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用easy_install来安装模块</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">easy_install 换源</span><br><span class="line">cd /root          注意要放到/root目录下</span><br><span class="line">vi .pydistutils.cfg 打开配置文件</span><br><span class="line"></span><br><span class="line">[easy_install]</span><br><span class="line">index-url=http://mirrors.aliyun.com/pypi/simple/</span><br><span class="line">find-links=http://mirrors.aliyun.com/pypi/simple/</span><br></pre></td></tr></table></figure>
+]]></content>
   </entry>
   <entry>
     <title>IOCCC分享</title>
@@ -150,18 +179,5 @@
       <tags>
         <tag>笔记</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>pip更换国内源</title>
-    <url>/2020/03/09/pip/</url>
-    <content><![CDATA[<p>pip更换国内源可加快下载速度</p>
-<a id="more"></a>
-
-<p><strong>步骤</strong></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mkdir ~/.pip</span><br><span class="line">vim ~/.pip/pip.conf</span><br><span class="line"></span><br><span class="line">打开文件后,输入以下信息,即可使用清华源</span><br><span class="line">[global]</span><br><span class="line">index-url = https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">[install]</span><br><span class="line">trusted-host = https://pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
-
-<p><strong>使用easy_install来安装模块</strong></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">easy_install 换源</span><br><span class="line">cd /root          注意要放到/root目录下</span><br><span class="line">vi .pydistutils.cfg 打开配置文件</span><br><span class="line"></span><br><span class="line">[easy_install]</span><br><span class="line">index-url=http://mirrors.aliyun.com/pypi/simple/</span><br><span class="line">find-links=http://mirrors.aliyun.com/pypi/simple/</span><br></pre></td></tr></table></figure>
-]]></content>
   </entry>
 </search>
